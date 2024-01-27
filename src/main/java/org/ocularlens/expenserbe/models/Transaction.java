@@ -1,5 +1,6 @@
 package org.ocularlens.expenserbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,15 +18,17 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     public Transaction() {}
 
-    public Transaction(LocalDateTime transactionDate, Double amount, String notes, Category category) {
+    public Transaction(LocalDateTime transactionDate, Double amount, String notes, Category category, User user) {
         this.transactionDate = transactionDate;
         this.amount = amount;
         this.notes = notes;
         this.category = category;
+        this.user = user;
     }
 
     public LocalDateTime getTransactionDate() {

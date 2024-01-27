@@ -4,16 +4,15 @@ import jakarta.validation.Valid;
 import org.ocularlens.expenserbe.models.Category;
 import org.ocularlens.expenserbe.repository.CategoryRepository;
 import org.ocularlens.expenserbe.requests.AddCategoryRequest;
+import org.ocularlens.expenserbe.requests.UpdateCategoryRequest;
 import org.ocularlens.expenserbe.serviceimpl.CategoryService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("category")
@@ -41,5 +40,34 @@ public class CategoryController {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping("/{categoryId}")
+    public Category findCategory(@PathVariable int categoryId) {
+        return categoryService.findCategory(categoryId);
+    }
+
+    @GetMapping
+    public List<Category> retrieveCategories(Authentication authentication) {
+        return categoryService.retrieveCategories(authentication);
+    }
+
+    @PutMapping("/{categoryId}")
+    public void updateCategory(
+            @PathVariable int categoryId,
+            @RequestBody UpdateCategoryRequest updateCategoryRequest,
+            Authentication authentication
+    ) {
+        categoryService.updateCategoryById(
+                categoryId,
+                updateCategoryRequest.type(),
+                authentication,
+                updateCategoryRequest.categoryName()
+        );
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public void deleteCategory(@PathVariable int categoryId, Authentication authentication) {
+        categoryService.deleteCategoryById(categoryId, authentication);
     }
 }

@@ -1,5 +1,6 @@
 package org.ocularlens.expenserbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.ocularlens.expenserbe.common.Role;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,13 +21,19 @@ public class User implements UserDetails {
     private String lastname;
     @Column(nullable = false, length = 50, unique = true)
     private String username;
+    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Transaction> transactions;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Category> categories;
 
     public User() {}
 

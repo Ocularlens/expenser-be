@@ -1,7 +1,7 @@
 package org.ocularlens.expenserbe.serviceimpl;
 
 import org.ocularlens.expenserbe.common.Role;
-import org.ocularlens.expenserbe.exception.UserNotFoundException;
+import org.ocularlens.expenserbe.exception.NotFoundException;
 import org.ocularlens.expenserbe.models.User;
 import org.ocularlens.expenserbe.repository.UserRepository;
 import org.ocularlens.expenserbe.response.JWTResponse;
@@ -43,11 +43,11 @@ public class AuthService implements IAuthService {
     @Override
     public JWTResponse login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) throw new UserNotFoundException("username" + username);
+        if (user.isEmpty()) throw new NotFoundException("username" + username);
 
         boolean matches = passwordEncoder.matches(password, user.get().getPassword());
 
-        if (!matches) throw new UserNotFoundException("username" + username);
+        if (!matches) throw new NotFoundException("username" + username);
 
         return new JWTResponse(createToken(user.get()));
     }

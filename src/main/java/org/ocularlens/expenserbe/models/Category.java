@@ -1,5 +1,6 @@
 package org.ocularlens.expenserbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.ocularlens.expenserbe.common.TransactionType;
 
@@ -17,17 +18,31 @@ public class Category {
     private String name;
 
     @Column(nullable = false)
+    @JsonIgnore
     private boolean createdByAdmin;
 
     @OneToMany(mappedBy = "category")
     private List<Transaction> transactions;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
+
     public Category() {}
 
-    public Category(TransactionType type, String name, boolean createdByAdmin) {
+    public Category(TransactionType type, String name, boolean createdByAdmin, User user) {
         this.type = type;
         this.name = name;
         this.createdByAdmin = createdByAdmin;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {
