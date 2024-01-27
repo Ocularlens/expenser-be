@@ -23,6 +23,14 @@ public class Transaction {
 
     public Transaction() {}
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Transaction(LocalDateTime transactionDate, Double amount, String notes, Category category, User user) {
         this.transactionDate = transactionDate;
         this.amount = amount;

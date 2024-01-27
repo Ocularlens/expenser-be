@@ -19,8 +19,8 @@ import java.util.Optional;
 
 @Service
 public class CategoryService implements ICategoryService {
-    private CategoryRepository categoryRepository;
-    private UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
 
     public CategoryService(CategoryRepository categoryRepository, UserRepository userRepository) {
         this.categoryRepository = categoryRepository;

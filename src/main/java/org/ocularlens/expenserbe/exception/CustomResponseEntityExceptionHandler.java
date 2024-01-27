@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        String errors = "";
+        StringBuilder errors = new StringBuilder();
 
         for (FieldError error : ex.getFieldErrors()) {
-            errors += error.getDefaultMessage() + ", ";
+            errors.append(error.getDefaultMessage()).append(", ");
         }
 
-        errors = errors.substring(0, errors.length() - 2);
+        errors = new StringBuilder(errors.substring(0, errors.length() - 2));
 
-        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), errors, request.getDescription(false));
+        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), errors.toString(), request.getDescription(false));
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }

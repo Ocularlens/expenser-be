@@ -17,9 +17,9 @@ import java.util.Optional;
 
 @Service
 public class AuthService implements IAuthService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtEncoder jwtEncoder;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtEncoder jwtEncoder;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtEncoder jwtEncoder) {
         this.userRepository = userRepository;
