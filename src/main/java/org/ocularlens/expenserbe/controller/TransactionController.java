@@ -25,8 +25,12 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Transaction>> retrieveTransactions(Authentication authentication, Pageable pageable) {
-        Page<Transaction> page = transactionService.retrieveTransactions(pageable, authentication);
+    public ResponseEntity<List<Transaction>> retrieveTransactions(
+            @RequestParam(required = false) String type,
+            Authentication authentication,
+            Pageable pageable
+    ) {
+        Page<Transaction> page = transactionService.retrieveTransactions(type, pageable, authentication);
         return ResponseEntity.ok(page.getContent());
     }
 

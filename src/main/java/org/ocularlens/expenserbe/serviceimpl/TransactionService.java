@@ -1,5 +1,6 @@
 package org.ocularlens.expenserbe.serviceimpl;
 
+import org.ocularlens.expenserbe.common.TransactionType;
 import org.ocularlens.expenserbe.exception.NotFoundException;
 import org.ocularlens.expenserbe.models.Category;
 import org.ocularlens.expenserbe.models.Transaction;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -67,9 +69,23 @@ public class TransactionService implements ITransactionService {
     }
 
     @Override
-    public Page<Transaction> retrieveTransactions(Pageable pageable, Authentication authentication) {
+    public Page<Transaction> retrieveTransactions(String type, Pageable pageable, Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).get();
+
         //using nativeQuery
+        if (!Objects.isNull(type)) {
+            try {
+                TransactionType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                throw new NotFoundException("type:" + type);
+            }
+            return transactionRepository.findUserTypedTransaction(user.getId(), type, PageRequest.of(
+                    pageable.getPageNumber(),
+                    pageable.getPageSize(),
+                    pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transaction_date"))
+            ));
+        }
+
         return transactionRepository.findUserTransactions(user.getId(), PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),

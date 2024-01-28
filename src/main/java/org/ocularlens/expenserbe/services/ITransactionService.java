@@ -11,7 +11,7 @@ import java.util.List;
 public interface ITransactionService {
     Transaction createTransaction(LocalDateTime transactionDate, Double amount, String notes, int categoryId, Authentication authentication);
     Transaction findTransaction(int transactionId, Authentication authentication);
-    Page<Transaction> retrieveTransactions(Pageable pageable, Authentication authentication);
+    Page<Transaction> retrieveTransactions(String type, Pageable pageable, Authentication authentication);
     void updateTransaction(int transactionId, LocalDateTime transactionDate, Double amount, String notes, int categoryId, Authentication authentication);
     void deleteTransaction(int transactionId, Authentication authentication);
 }
