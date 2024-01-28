@@ -1,27 +1,31 @@
 package org.ocularlens.expenserbe.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false)
     private LocalDateTime transactionDate;
     @Column(nullable = false)
     private Double amount;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String notes;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"id", "type"})
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
 
-    public Transaction() {}
+    public Transaction() {
+    }
 
     public User getUser() {
         return user;
@@ -29,6 +33,14 @@ public class Transaction {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Transaction(LocalDateTime transactionDate, Double amount, String notes, Category category, User user) {
