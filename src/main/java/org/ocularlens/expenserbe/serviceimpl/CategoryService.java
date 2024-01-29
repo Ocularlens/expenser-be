@@ -9,7 +9,6 @@ import org.ocularlens.expenserbe.models.User;
 import org.ocularlens.expenserbe.repository.CategoryRepository;
 import org.ocularlens.expenserbe.repository.UserRepository;
 import org.ocularlens.expenserbe.services.ICategoryService;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +35,23 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<Category> retrieveCategories(Authentication authentication) {
+    public List<Category> retrieveCategories(String type, Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).get();
-        return categoryRepository.findUserAndAdminCreatedCategoriesByUserId(user.getId());
+
+        if (!Objects.isNull(type)) {
+            try {
+                TransactionType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+                throw new NotFoundException("type:" + type);
+            }
+            return categoryRepository.findCategoriesByUserIdAndTypeAndCreatedByAdmin(
+                    user.getId(),
+                    TransactionType.valueOf(type),
+                    true
+            );
+        }
+
+        return categoryRepository.findCategoriesByUserAndCreatedByAdmin(user.getId());
     }
 
     @Override

@@ -22,6 +22,7 @@ public class CategoryController {
     public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
+
     @PostMapping
     public ResponseEntity<Category> addCategory(
             @Valid @RequestBody AddCategoryRequest addCategoryRequest,
@@ -48,8 +49,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> retrieveCategories(Authentication authentication) {
-        return categoryService.retrieveCategories(authentication);
+    public List<Category> retrieveCategories(@RequestParam(required = false) String type, Authentication authentication) {
+        return categoryService.retrieveCategories(type, authentication);
     }
 
     @PutMapping("/{categoryId}")

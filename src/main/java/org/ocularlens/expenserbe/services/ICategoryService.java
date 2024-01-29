@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ICategoryService {
     Category createCategory(String type, Authentication authentication, String categoryName);
-    List<Category> retrieveCategories(Authentication authentication);
+    List<Category> retrieveCategories(String type, Authentication authentication);
     void updateCategoryById(int id, String type, Authentication authentication, String categoryName);
     void deleteCategoryById(int id, Authentication authentication);
     Category findCategory(int id);

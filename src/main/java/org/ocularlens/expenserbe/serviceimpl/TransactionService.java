@@ -72,24 +72,27 @@ public class TransactionService implements ITransactionService {
     public Page<Transaction> retrieveTransactions(String type, Pageable pageable, Authentication authentication) {
         User user = userRepository.findByUsername(authentication.getName()).get();
 
-        //using nativeQuery
         if (!Objects.isNull(type)) {
             try {
                 TransactionType.valueOf(type);
             } catch (IllegalArgumentException e) {
                 throw new NotFoundException("type:" + type);
             }
-            return transactionRepository.findUserTypedTransaction(user.getId(), type, PageRequest.of(
-                    pageable.getPageNumber(),
-                    pageable.getPageSize(),
-                    pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transaction_date"))
-            ));
+            //using nativeQuery
+            return transactionRepository.findTransactionsByUserIdAndTransactionType(
+                    user.getId(),
+                    type,
+                    PageRequest.of(
+                            pageable.getPageNumber(),
+                            pageable.getPageSize(),
+                            pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transaction_date"))
+                    ));
         }
 
-        return transactionRepository.findUserTransactions(user.getId(), PageRequest.of(
+        return transactionRepository.findTransactionsByUserId(user.getId(), PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transaction_date"))
+                pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transactionDate"))
         ));
     }
 
