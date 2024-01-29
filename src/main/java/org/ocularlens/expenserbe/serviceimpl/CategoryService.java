@@ -9,6 +9,8 @@ import org.ocularlens.expenserbe.models.User;
 import org.ocularlens.expenserbe.repository.CategoryRepository;
 import org.ocularlens.expenserbe.repository.UserRepository;
 import org.ocularlens.expenserbe.services.ICategoryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import java.util.Optional;
 public class CategoryService implements ICategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public CategoryService(CategoryRepository categoryRepository, UserRepository userRepository) {
         this.categoryRepository = categoryRepository;
@@ -39,6 +43,9 @@ public class CategoryService implements ICategoryService {
         User user = userRepository.findByUsername(authentication.getName()).get();
 
         if (!Objects.isNull(type)) {
+
+            logger.info("Transaction type {}", type);
+
             try {
                 TransactionType.valueOf(type);
             } catch (IllegalArgumentException e) {
@@ -50,6 +57,8 @@ public class CategoryService implements ICategoryService {
                     true
             );
         }
+
+        logger.info("Transaction type not set");
 
         return categoryRepository.findCategoriesByUserAndCreatedByAdmin(user.getId());
     }
@@ -68,6 +77,8 @@ public class CategoryService implements ICategoryService {
         category.setType(TransactionType.valueOf(type));
         category.setName(categoryName);
         categoryRepository.save(category);
+
+        logger.info("Category with id of {} - updated", id);
     }
 
     @Override
@@ -82,12 +93,17 @@ public class CategoryService implements ICategoryService {
         if (!isAdmin || !isCreatedByUser) return;
 
         categoryRepository.delete(category);
+
+        logger.info("Category with id of {} - deleted", id);
     }
 
     @Override
     public Category findCategory(int id) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) throw new NotFoundException("categoryId:" + id);
+
+        logger.info("Category with id of {} - found", id);
+
         return category.get();
     }
 }

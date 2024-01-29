@@ -8,6 +8,8 @@ import org.ocularlens.expenserbe.models.User;
 import org.ocularlens.expenserbe.repository.TransactionRepository;
 import org.ocularlens.expenserbe.repository.UserRepository;
 import org.ocularlens.expenserbe.services.ITransactionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,8 @@ public class TransactionService implements ITransactionService {
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
     private final CategoryService categoryService;
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public TransactionService(
             TransactionRepository transactionRepository,
@@ -73,6 +77,9 @@ public class TransactionService implements ITransactionService {
         User user = userRepository.findByUsername(authentication.getName()).get();
 
         if (!Objects.isNull(type)) {
+
+            logger.info("Transaction type {}", type);
+
             try {
                 TransactionType.valueOf(type);
             } catch (IllegalArgumentException e) {
@@ -88,6 +95,8 @@ public class TransactionService implements ITransactionService {
                             pageable.getSortOr(Sort.by(Sort.Direction.ASC, "transaction_date"))
                     ));
         }
+
+        logger.info("Transaction type not set");
 
         return transactionRepository.findTransactionsByUserId(user.getId(), PageRequest.of(
                 pageable.getPageNumber(),
@@ -114,11 +123,15 @@ public class TransactionService implements ITransactionService {
         transaction.setNotes(notes);
 
         transactionRepository.save(transaction);
+
+        logger.info("Transaction with id of {} - updated", transactionId);
     }
 
     @Override
     public void deleteTransaction(int transactionId, Authentication authentication) {
         Transaction transaction = findTransaction(transactionId, authentication);
         transactionRepository.delete(transaction);
+
+        logger.info("Transaction with id of {} - deleted", transactionId);
     }
 }

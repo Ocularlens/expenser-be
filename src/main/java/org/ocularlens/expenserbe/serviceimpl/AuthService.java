@@ -6,6 +6,8 @@ import org.ocularlens.expenserbe.models.User;
 import org.ocularlens.expenserbe.repository.UserRepository;
 import org.ocularlens.expenserbe.response.JWTResponse;
 import org.ocularlens.expenserbe.services.IAuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -21,6 +23,8 @@ public class AuthService implements IAuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtEncoder jwtEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -35,6 +39,8 @@ public class AuthService implements IAuthService {
                 .subject(user.getUsername())
                 .claim("scope", user.getRole())
                 .build();
+
+        logger.info("Creating JWT for {}", user);
 
         JwtEncoderParameters parameters = JwtEncoderParameters.from(claimsSet);
         return jwtEncoder.encode(parameters).getTokenValue();
@@ -57,6 +63,8 @@ public class AuthService implements IAuthService {
         String encodedPassword = passwordEncoder.encode(password);
         boolean roleCondition = role == null || role.equals(Role.USER.toString());
         Role userRole = roleCondition ? Role.USER : Role.ADMIN;
+
+        logger.info("Creating new user");
 
         return userRepository.save(
                 new User(
