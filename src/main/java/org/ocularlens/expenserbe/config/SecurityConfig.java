@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain JWTSecurity(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(
             auth -> auth
-                    .requestMatchers("/auth/**").permitAll()
+                    .requestMatchers("/","/auth/**").permitAll()
                     .anyRequest()
                     .authenticated()
         );

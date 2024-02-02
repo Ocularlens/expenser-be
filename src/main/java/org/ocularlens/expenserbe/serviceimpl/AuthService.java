@@ -49,11 +49,11 @@ public class AuthService implements IAuthService {
     @Override
     public JWTResponse login(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) throw new NotFoundException("username" + username);
+        if (user.isEmpty()) throw new NotFoundException("username: " + username);
 
         boolean matches = passwordEncoder.matches(password, user.get().getPassword());
 
-        if (!matches) throw new NotFoundException("username" + username);
+        if (!matches) throw new NotFoundException("username: " + username);
 
         return new JWTResponse(createToken(user.get()));
     }
