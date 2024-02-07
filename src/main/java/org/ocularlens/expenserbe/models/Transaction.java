@@ -18,7 +18,7 @@ public class Transaction {
     @Column(nullable = true)
     private String notes;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnoreProperties({"id", "type"})
+    @JsonIgnoreProperties({"id"})
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
