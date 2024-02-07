@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
     Page<Transaction> findTransactionsByUserId(int id, Pageable pageable);
 
@@ -20,4 +22,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
             nativeQuery = true
     )
     Page<Transaction> findTransactionsByUserIdAndTransactionType(int id, String type, Pageable pageable);
+    @Query(value = "SELECT * FROM transaction WHERE user_id = ?1 AND MONTH(transaction_date) = ?2", nativeQuery = true)
+    List<Transaction> findTransactionsByUserIdAndByMonth(int id, int month);
 }

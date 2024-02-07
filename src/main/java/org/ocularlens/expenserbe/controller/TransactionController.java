@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("transaction")
@@ -22,6 +23,13 @@ public class TransactionController {
 
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
+    }
+
+    @GetMapping("/groupByDate")
+    public Map<String, List<Transaction>> getGroupedByDateTransactions(
+            @RequestParam int month, Authentication authentication
+    ) {
+        return transactionService.retrieveTransactions(month, authentication);
     }
 
     @GetMapping

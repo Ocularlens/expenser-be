@@ -14,13 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 public class TransactionService implements ITransactionService {
@@ -51,7 +51,7 @@ public class TransactionService implements ITransactionService {
         Category category = categoryService.findCategory(categoryId);
         User user = userRepository.findByUsername(authentication.getName()).get();
         return transactionRepository.save(new Transaction(
-                LocalDateTime.now(),
+                transactionDate,
                 amount,
                 notes,
                 category,
@@ -133,5 +133,27 @@ public class TransactionService implements ITransactionService {
         transactionRepository.delete(transaction);
 
         logger.info("Transaction with id of {} - deleted", transactionId);
+    }
+
+    @Override
+    public Map<String, List<Transaction>> retrieveTransactions(int month, Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName()).get();
+
+        List<Transaction> transactions = transactionRepository.findTransactionsByUserIdAndByMonth(user.getId(), month);
+        Map<String, List<Transaction>> map = new HashMap<>();
+        transactions.stream().forEach(transaction -> {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String dateOnly = formatter.format(transaction.getTransactionDate());
+            if (map.containsKey(dateOnly)) {
+                List<Transaction> inMap = map.get(dateOnly);
+                System.out.println(inMap);
+                inMap.add(transaction);
+                map.put(dateOnly, inMap);
+            } else {
+                List<Transaction> newList = new ArrayList<>(Arrays.asList(transaction));
+                map.put(dateOnly, newList);
+            }
+        });
+        return map;
     }
 }
