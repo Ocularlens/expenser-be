@@ -53,8 +53,7 @@ public class CategoryService implements ICategoryService {
             }
             return categoryRepository.findCategoriesByUserIdAndTypeAndCreatedByAdmin(
                     user.getId(),
-                    TransactionType.valueOf(type),
-                    true
+                    TransactionType.valueOf(type)
             );
         }
 
