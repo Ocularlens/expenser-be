@@ -105,4 +105,11 @@ public class CategoryService implements ICategoryService {
 
         return category.get();
     }
+
+    @Override
+    public List<Category> retrieveUserCategories(Authentication authentication) {
+        User user = userRepository.findByUsername(authentication.getName()).get();
+
+        return categoryRepository.findCategoriesByUserId(user.getId());
+    }
 }

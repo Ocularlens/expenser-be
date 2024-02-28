@@ -49,7 +49,13 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> retrieveCategories(@RequestParam(required = false) String type, Authentication authentication) {
+    public List<Category> retrieveCategories(
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) boolean createdByUser,
+            Authentication authentication
+    ) {
+        if (createdByUser)
+            return categoryService.retrieveUserCategories(authentication);
         return categoryService.retrieveCategories(type, authentication);
     }
 

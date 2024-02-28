@@ -12,4 +12,5 @@ public interface ICategoryService {
     void updateCategoryById(int id, String type, Authentication authentication, String categoryName);
     void deleteCategoryById(int id, Authentication authentication);
     Category findCategory(int id);
+    List<Category> retrieveUserCategories(Authentication authentication);
 }
