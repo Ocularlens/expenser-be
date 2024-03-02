@@ -71,7 +71,7 @@ public class CategoryService implements ICategoryService {
         User user = userRepository.findByUsername(authentication.getName()).get();
         boolean isCreatedByUser = user.getId() == category.getUser().getId();
 
-        if (!isAdmin || !isCreatedByUser) return;
+        if (!isAdmin && !isCreatedByUser) return;
 
         category.setType(TransactionType.valueOf(type));
         category.setName(categoryName);

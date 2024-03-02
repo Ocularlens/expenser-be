@@ -45,12 +45,13 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated()
         );
-        // httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
-        httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-
+        httpSecurity.oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(Customizer.withDefaults())
+                        .authenticationEntryPoint(new CustomAuthenticationHandler())
+        );
         return httpSecurity.build();
     }
 
