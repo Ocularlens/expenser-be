@@ -52,6 +52,7 @@ public class SecurityConfig {
                 oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(new CustomAuthenticationHandler())
         );
+        httpSecurity.cors(Customizer.withDefaults());
         return httpSecurity.build();
     }
 
@@ -59,9 +60,7 @@ public class SecurityConfig {
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedMethods("*")
-                        .allowedOrigins("*")
+                registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE").allowedOrigins("*")
                         .allowedHeaders("*");
             }
         };
